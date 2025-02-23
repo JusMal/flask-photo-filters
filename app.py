@@ -13,8 +13,13 @@ def upload_file():
         if 'file' not in request.files:
             return "Brak pliku!"
         file = request.files['file']
-        if file.filename == '':
-            return "Nie wybrano pliku!"
+        if not  file or file.filename == '':
+            return "Błąd: Nie wybrano pliku lub plik jest uszkodzony", 400
+
+try:
+image = Image.open(file)
+except Exception as e:
+    return f"Błąd podczas otwierania obrazu: {str(e)}", 500
         
         image = Image.open(file)
         processed_image = apply_filter(image)
