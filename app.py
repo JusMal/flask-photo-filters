@@ -3,37 +3,36 @@ from PIL import Image, ImageOps
 import io
 
 app = Flask(__name__)
-
 def apply_filter(image):
-    return ImageOps.grayscale(image)  # Przykładowy filtr (czarno-biały)
+    """Przykładowy filtr - konwersja do czarno-białego"""
+    return ImageOps.grayscale(image)
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route("/", methods=["GET", "POST"])
 def upload_file():
-    if request.method == 'POST':
-        if 'file' not in request.files:
-            return "Brak pliku!"
-        file = request.files['file']
-        if not  file or file.filename == '':
+    if request.method == "POST":
+        if "file" not in request.files:
+            return "Brak pliku!", 400
+        
+        file = request.files["file"]
+        if not file or file.filename == "":
             return "Błąd: Nie wybrano pliku lub plik jest uszkodzony", 400
 
-try:
-    file = request.files['file']
-    image = Image.open(file)
-except Exception as e:
-    return f"Błąd podczas otwierania obrazu: {str(e)}", 500
-        
-        image = Image.open(file)
+        try:
+            image = Image.open(file)
+        except Exception as e:
+            return f"Błąd podczas otwierania obrazu: {str(e)}", 500
+
         processed_image = apply_filter(image)
 
         img_io = io.BytesIO()
-        processed_image.save(img_io, 'JPEG', quality=90)
+        processed_image.save(img_io, "JPEG", quality=90)
         img_io.seek(0)
 
-        return send_file(img_io, mimetype='image/jpeg')
+        return send_file(img_io, mimetype="image/jpeg")
 
-    return render_template('index.html')
+    return render_template("index.html")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
 from flask import Flask, request, render_template, send_file
 from PIL import Image, ImageOps
