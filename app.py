@@ -2,6 +2,36 @@ from flask import Flask, request, render_template, send_file
 from PIL import Image, ImageOps
 import io
 
+app = Flask(__name__)
+
+def apply_filter(image):
+    return ImageOps.grayscale(image)  # Przykładowy filtr (czarno-biały)
+
+@app.route('/', methods=['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            return "Brak pliku!"
+        file = request.files['file']
+        if file.filename == '':
+            return "Nie wybrano pliku!"
+        
+        image = Image.open(file)
+        processed_image = apply_filter(image)
+
+        img_io = io.BytesIO()
+        processed_image.save(img_io, 'JPEG', quality=90)
+        img_io.seek(0)
+
+        return send_file(img_io, mimetype='image/jpeg')
+
+    return render_template('index.html')
+
+if __name__ == '__main__':
+    app.run(host="0.0.0.0", port=10000)from flask import Flask, request, render_template, send_file
+from PIL import Image, ImageOps
+import io
+
 app = Flask(__name__)  # Tworzymy aplikację Flask
 
 def apply_filter(image, filter_type):
