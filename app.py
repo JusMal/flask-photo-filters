@@ -28,7 +28,8 @@ def upload_file():
     return render_template('index.html')
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=10000)from flask import Flask, request, render_template, send_file
+    app.run(host="0.0.0.0", port=10000)
+from flask import Flask, request, render_template, send_file
 from PIL import Image, ImageOps
 import io
 
