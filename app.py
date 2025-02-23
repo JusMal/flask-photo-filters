@@ -17,9 +17,10 @@ def upload_file():
             return "Błąd: Nie wybrano pliku lub plik jest uszkodzony", 400
 
 try:
+	file = request.files['file']
 	image = Image.open(file)
 except Exception as e:
-    return f"Błąd podczas otwierania obrazu: {str(e)}", 500
+	return f"Błąd podczas otwierania obrazu: {str(e)}", 500
         
         image = Image.open(file)
         processed_image = apply_filter(image)
